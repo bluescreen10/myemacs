@@ -179,3 +179,40 @@ by using nxml's indentation rules."
       (rename-buffer new-name)
       (set-visited-file-name new-name)
       (set-buffer-modified-p nil))))))
+
+;; Customize scheme
+;(set-background-color "black") ; Uncomment to avoid transparent background and get a *nice* solid colour
+;;(set-foreground-color "white")
+;;(set-cursor-color "white")
+;;(set-face-foreground 'region "black")
+;;(set-face-background 'region "white")
+;;(set-face-foreground 'modeline "white")
+;;(set-face-background 'modeline "red")
+;;(set-face-foreground 'isearch "white")
+;;(set-face-background 'isearch "red")
+;;(set-face-background 'isearch-lazy-highlight-face "white")
+;;(set-face-background 'isearch-lazy-highlight-face "red")
+
+(custom-set-faces
+'(region ((t (:background "#2a2a2a"))))
+'(font-lock-comment-face ((t (:foreground "#44444e" :slant italic ))))
+'(font-lock-string-face ((t (:foreground "#66bb00" ))))
+'(font-lock-keyword-face ((t (:foreground "#ff6600" ))))
+'(font-lock-variable-name-face ((t (:foreground "#5251ce" ))))
+'(font-lock-type-face ((t (:foreground "#339999" :weight bold))))
+'(font-lock-function-name-face ((((class color)) (:foreground "#eebb00" :weight bold))))
+'(show-paren-match-face ((((class color)) ( :background "#343474"))))
+'(font-lock-constant-face  ((((class color)) (:foreground "#339999" :weight bold))))
+'(cperl-nonoverridable-face ((t (:foreground "#339999" :weight bold))))
+'(cperl-array-face ((t (:foreground "#5251ce" :weight bold))))
+'(cperl-hash-face ((t (:foreground "#5251ce" :weight bold))))
+'(which-func ((t (:foreground "#999999" :weight bold))))
+)
+
+;; Enable which function mode
+(add-hook 'cperl-mode-hook
+          (lambda ()
+            (which-function-mode t)))
+
+;; ETAGS
+(visit-tags-table "~/working/workspace/wctperl/TAGS")
