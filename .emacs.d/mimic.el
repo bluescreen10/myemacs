@@ -9,6 +9,9 @@
 (add-to-list 'mimic-locations '("~/working/workspace/wctabo/" "wahlmann@10.19.89.57:/usr/local/cm/data/dev16/sites/wctravel/cgi-bin/" ))
 (add-to-list 'mimic-locations '("~/working/workspace/wctibo/" "wahlmann@10.19.89.57:/usr/local/cm/data/dev16/sites/wctravel/" ))
 (add-to-list 'mimic-locations '("~/working/workspace/wctcron/" "wahlmann@10.19.89.57:/usr/local/cm/data/dev16/wctcron/" ))
+(add-to-list 'mimic-locations '("~/working/workspace/t/" "wahlmann@10.19.89.57:/usr/local/cm/data/dev16/t/" ))
+(add-to-list 'mimic-locations '("~/working/workspace/javasrc/" "wahlmann@10.19.89.57:/usr/local/cm/data/dev16/javasrc/" ))
+(add-to-list 'mimic-locations '("~/working/workspace/wctservlets/" "wahlmann@10.19.89.57:/usr/local/cm/data/dev16/wctservlets/" ))
 (setq mimic-command '"/usr/bin/rsync")
 
 

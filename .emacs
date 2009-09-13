@@ -31,11 +31,6 @@
 (setq-default indent-tabs-mode nil)
 
 
-;(require 'ecb)
-;(setq ecb-layout-name "prueba")
-;(setq ecb-source-path (quote ("~/working/workspace")))
-;(ecb-activate)
-
 ;; From: http://www.perlmonks.org/index.pl?node_id=380724
 ;; 
 ;; Put this in your ~/.emacs file, select the region you
@@ -138,7 +133,15 @@ Otherwise, analyses point position and answers."
   (find-name-dired workspace-dir pattern))
 
 ;; Save backups in backups_folder
-(setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+(defvar user-temporary-file-directory "~/.emacs_backups/")
+(setq backup-by-copying t)
+(setq backup-directory-alist
+      `(("." . ,user-temporary-file-directory)
+        (,tramp-file-name-regexp nil)))
+(setq auto-save-list-file-prefix
+      (concat user-temporary-file-directory ".auto-saves-"))
+(setq auto-save-file-name-transforms
+      `((".*" ,user-temporary-file-directory t)))
 
 ;; Enable columns numbers
 (setq column-number-mode t)
@@ -216,3 +219,8 @@ by using nxml's indentation rules."
 
 ;; ETAGS
 (visit-tags-table "~/working/workspace/wctperl/TAGS")
+
+;; Convert line endings to UNIX allways for cperl-files
+(add-hook 'before-save-hook
+          (lambda ()
+            (set-buffer-file-coding-system 'unix)))
