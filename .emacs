@@ -9,7 +9,6 @@
  '(cperl-indent-parens-as-block t)
  '(cperl-tab-always-indent t)
  '(cua-mode t nil (cua-base))
- '(org-agenda-files (quote ("~/working/org/sabre.org")))
  '(scalable-fonts-allowed t)
  '(show-paren-mode t))
 (custom-set-faces
@@ -17,8 +16,8 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#111" :foreground "#ddd" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 103 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
- '(mode-line ((t (:background "DarkRed" :foreground "#ddd" :box (:line-width -1 :style released-button))))))
+ '(default ((t (:inherit nil :stipple nil :foreground "#222" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Inconsolata"))))
+ '(mode-line ((t (:background "#030" :foreground "#ccc" :box (:line-width -1 :style released-button))))))
 
 ;; Cperl
 (defalias 'perl-mode 'cperl-mode)
@@ -118,7 +117,7 @@ Otherwise, analyses point position and answers."
 
 ;; Grep in workspace
 (grep-compute-defaults)
-(defvar workspace-dir '"~/working/workspace")
+(defvar workspace-dir '"~/working/workspace2")
 (defun grep-in-workspace (pattern)
   "Run `rgrep' in all files of `wokspace-dir' for the given PATTERN."
   (interactive "sGrep pattern: ")
@@ -145,6 +144,10 @@ Otherwise, analyses point position and answers."
 
 ;; Enable columns numbers
 (setq column-number-mode t)
+
+
+;;Orgmode
+(require 'org-install)
 
 ;; Encryption
 (require 'epa-file)
@@ -184,32 +187,22 @@ by using nxml's indentation rules."
       (set-buffer-modified-p nil))))))
 
 ;; Customize scheme
-;(set-background-color "black") ; Uncomment to avoid transparent background and get a *nice* solid colour
-;;(set-foreground-color "white")
-;;(set-cursor-color "white")
-;;(set-face-foreground 'region "black")
-;;(set-face-background 'region "white")
-;;(set-face-foreground 'modeline "white")
-;;(set-face-background 'modeline "red")
-;;(set-face-foreground 'isearch "white")
-;;(set-face-background 'isearch "red")
-;;(set-face-background 'isearch-lazy-highlight-face "white")
-;;(set-face-background 'isearch-lazy-highlight-face "red")
-
 (custom-set-faces
-'(region ((t (:background "#2a2a2a"))))
-'(font-lock-comment-face ((t (:foreground "#44444e" :slant italic ))))
-'(font-lock-string-face ((t (:foreground "#66bb00" ))))
-'(font-lock-keyword-face ((t (:foreground "#ff6600" ))))
-'(font-lock-variable-name-face ((t (:foreground "#5251ce" ))))
-'(font-lock-type-face ((t (:foreground "#339999" :weight bold))))
-'(font-lock-function-name-face ((((class color)) (:foreground "#eebb00" :weight bold))))
-'(show-paren-match-face ((((class color)) ( :background "#343474"))))
-'(font-lock-constant-face  ((((class color)) (:foreground "#339999" :weight bold))))
-'(cperl-nonoverridable-face ((t (:foreground "#339999" :weight bold))))
-'(cperl-array-face ((t (:foreground "#5251ce" :weight bold))))
-'(cperl-hash-face ((t (:foreground "#5251ce" :weight bold))))
-'(which-func ((t (:foreground "#999999" :weight bold))))
+ '(region ((t (:background "#fffe73"))))
+ '(font-lock-comment-face ((t (:foreground "#3a5fcd" :slant italic ))))
+ '(font-lock-string-face ((t (:foreground "#228b22" ))))
+ '(font-lock-keyword-face ((t (:foreground "#000080"))))
+ '(font-lock-builtin-face ((t (:foreground "#a12600"))))
+ '(font-lock-variable-name-face ((t (:foreground "#a12600" ))))
+ '(font-lock-type-face ((t (:foreground "#000080" :weight bold))))
+ '(font-lock-function-name-face ((((class color)) (:foreground "#e06800"))))
+ '(show-paren-match-face ((((class color)) ( :background "#bbb"))))
+ '(font-lock-constant-face  ((((class color)) (:foreground "#e06800" :weight bold))))
+ '(cperl-nonoverridable-face ((t (:foreground "#000080" :weight bold))))
+ '(cperl-array-face ((t (:foreground "#a12600"))))
+ '(cperl-hash-face ((t (:foreground "#a12600"))))
+ '(underline ((t (:foreground "#999" :underline t))))
+ '(which-func ((t (:foreground "#6c0" :weight bold))))
 )
 
 ;; Enable which function mode
@@ -217,10 +210,54 @@ by using nxml's indentation rules."
           (lambda ()
             (which-function-mode t)))
 
-;; ETAGS
-(visit-tags-table "~/working/workspace/wctperl/TAGS")
-
 ;; Convert line endings to UNIX allways for cperl-files
 (add-hook 'before-save-hook
           (lambda ()
             (set-buffer-file-coding-system 'unix)))
+
+;;Parrot
+;;(load-file "~/.emacs.d/parrot.el")
+
+
+(custom-set-variables
+  '(org-agenda-files (quote ("~/working/org/todo.org"))))
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-font-lock-mode 1)
+
+;;Run a perl (or others) files
+(defun run-current-file ()
+  "Execute or compile the current file. For example, if the current buffer is the file x.pl, then it'll call perl x.pl in a shell. The file can be php, perl, python, bash, java.
+File suffix is used to determine what program to run."
+(interactive)
+  (let (ext-map file-name file-ext prog-name cmd-str)
+; get the file name
+; get the program name
+; run it
+    (setq ext-map
+          '(
+            ("php" . "php")
+            ("pl" . "perl")
+            ("py" . "python")
+            ("sh" . "bash")
+            ("java" . "javac")
+            )
+          )
+    (setq file-name (buffer-file-name))
+    (setq file-ext (file-name-extension file-name))
+    (setq prog-name (cdr (assoc file-ext ext-map)))
+    (setq cmd-str (concat prog-name " " file-name))
+    (shell-command cmd-str)))
+
+
+(global-set-key (kbd "<f7>") 'run-current-file)
+(put 'narrow-to-region 'disabled nil)
+(put 'set-goal-column 'disabled nil)
+
+;; Do not show GNU splash screen
+(setq inhibit-startup-message t)
+
+;; ETAGS
+(setq tags-table-list 
+      '("~/TAGS" ))
