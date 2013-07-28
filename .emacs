@@ -1,27 +1,70 @@
+;; Load path
+;;(add-to-list 'load-path "~/.emacs.d")  
+
+;; Repositories
+(setq package-archives
+  '(("melpa" . "http://melpa.milkbox.net/packages/")))
+
+;; Packages
+(require 'package)
+(package-initialize)
+
+;; Look and feel
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(cperl-close-paren-offset -4)
  '(cperl-continued-statement-offset 4)
+ '(cperl-highlight-variables-indiscriminately t)
  '(cperl-indent-level 4)
  '(cperl-indent-parens-as-block t)
+ '(cperl-invalid-face nil)
  '(cperl-tab-always-indent t)
- '(cua-mode t nil (cua-base))
+ '(org-agenda-files (quote ("~/workspace/org/agenda.org")))
  '(scalable-fonts-allowed t)
  '(show-paren-mode t))
+
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :foreground "#222" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Inconsolata"))))
- '(mode-line ((t (:background "#030" :foreground "#ccc" :box (:line-width -1 :style released-button))))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "grey12" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :family "Droid Sans Mono"))))
+ '(cperl-array-face ((t (:foreground "white"))))
+ '(cperl-hash-face ((t (:foreground "white"))))
+ '(cperl-nonoverridable-face ((t (:foreground "cyan3" ))))
+ '(cursor ((t (:background "#e09800"))))
+ '(font-lock-builtin-face ((t (:foreground "deep pink" ))))
+ '(font-lock-comment-face ((t (:foreground "#998" ))))
+ '(font-lock-constant-face ((((class color)) (:foreground "#009926"))))
+ '(font-lock-function-name-face ((((class color)) (:foreground "chartreuse"))))
+ '(font-lock-keyword-face ((t (:foreground "deep pink" ))))
+ '(font-lock-string-face ((t (:foreground "khaki"))))
+ '(font-lock-type-face ((t (:foreground "deep pink" ))))
+ '(font-lock-variable-name-face ((t (:foreground "white"))))
+ '(fringe ((t (:foreground "grey12"))))
+ '(hl-line ((t (:background "grey16"))))
+ '(mode-line ((t (:foreground "#eee" :background "#333"))))
+ '(mode-line-buffer-id ((t (:foreground "#fff" ))))
+ '(mode-line-inactive ((t (:foreground "#eee" :background "#666"))))
+ '(region ((t (:background "grey4"))))
+ '(show-paren-match ((((class color)) (:background "#bbb"))))
+ '(underline ((t (:foreground "#999" :underline t))))
+ '(which-func ((t (:foreground "#e09800" )))))
+
+;; Hi-line
+(global-hl-line-mode 1)
+
+;;(load  "~/.emacs.d/cperl-mode.el")
+(setq cperl-hairy nil)
+;;(setq cperl-electric-parens nil)
 
 ;; Cperl
 (defalias 'perl-mode 'cperl-mode)
-(setq auto-mode-alist (cons '("\\.t$|\\.cgi$" . cperl-mode) auto-mode-alist))
+(setq auto-mode-alist (append (list (cons "\\.\\(psgi\\|t\\|cgi\\|psgi\\)$" 'cperl-mode)) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("cpanfile" . cperl-mode))
 
 ;; Use 4 space indents via cperl mode
 
@@ -29,23 +72,10 @@
 ;; Insert spaces instead of tabs
 (setq-default indent-tabs-mode nil)
 
-
-;; From: http://www.perlmonks.org/index.pl?node_id=380724
-;; 
-;; Put this in your ~/.emacs file, select the region you
-;; want to clean up and type C-xt or M-x perltidy-region.
-
-(global-set-key "\C-xt" 'perltidy-region)
-(defun perltidy-region ()
-  "Run perltidy on the current region or the whole buffer."
-  (interactive)
-  (save-excursion
-    (let ((beg (if mark-active (point) (point-min)))
-          (end (if mark-active (mark) (point-max)))) 
-      (shell-command-on-region beg end "perltidy -q" nil t))))
-
-
 (global-set-key [(control /)] 'comment-or-uncomment-region)
+
+;; Load path
+(add-to-list 'load-path "~/.emacs.d")  
 
 ;; Load uploader
 (load  "~/.emacs.d/mimic.el")
@@ -105,31 +135,21 @@ Otherwise, analyses point position and answers."
             (local-set-key (kbd "<tab>") 'smart-tab)
             ))
 
+;; Enable smartab for java files
+(add-hook 'jde-mode-hook
+          (lambda ()
+            (local-set-key (kbd "<tab>") 'smart-tab)
+            ))
+
+
 ;; Enable smartab for html files
 (add-hook 'html-mode-hook
           (lambda ()
             (local-set-key (kbd "<tab>") 'smart-tab)
             ))
 
-
 ;; Revert buffer
 (global-set-key "\C-xrr" 'revert-buffer)
-
-;; Grep in workspace
-(grep-compute-defaults)
-(defvar workspace-dir '"~/working/workspace2")
-(defun grep-in-workspace (pattern)
-  "Run `rgrep' in all files of `wokspace-dir' for the given PATTERN."
-  (interactive "sGrep pattern: ")
-  (rgrep pattern "*" workspace-dir))
-
-(global-set-key "\C-xgs" 'grep-in-workspace)
-
-;; Find in workspace
-(defun find-in-workspace (pattern)
-  "Run `find-name-dired' in `workspace-dir'."
-  (interactive "sFilename wildcard: ")
-  (find-name-dired workspace-dir pattern))
 
 ;; Save backups in backups_folder
 (defvar user-temporary-file-directory "~/.emacs_backups/")
@@ -142,32 +162,24 @@ Otherwise, analyses point position and answers."
 (setq auto-save-file-name-transforms
       `((".*" ,user-temporary-file-directory t)))
 
+;; Tramp
+(setq tramp-default-host "localhost")
+
 ;; Enable columns numbers
 (setq column-number-mode t)
 
 
 ;;Orgmode
-(require 'org-install)
+(require 'org)
+(setq org-todo-keyword-faces
+      '(
+        ("WORKING" . (:foreground "orange" :weight bold))
+        ("WAIT"    . (:foreground "grey" :weight bold))
+        ))
 
 ;; Encryption
 (require 'epa-file)
 (epa-file-enable)
-
-;; Pretty print xml
-(defun bf-pretty-print-xml-region (begin end)
-  "Pretty format XML markup in region. You need to have nxml-mode
-http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
-this.  The function inserts linebreaks to separate tags that have
-nothing but whitespace between them.  It then indents the markup
-by using nxml's indentation rules."
-  (interactive "r")
-  (save-excursion
-      (nxml-mode)
-      (goto-char begin)
-      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-        (backward-char) (insert "\n"))
-      (indent-region begin end))
-    (message "Ah, much better!"))
 
 ;; Renaming
 ;; source: http://steve.yegge.googlepages.com/my-dot-emacs-file
@@ -187,23 +199,7 @@ by using nxml's indentation rules."
       (set-buffer-modified-p nil))))))
 
 ;; Customize scheme
-(custom-set-faces
- '(region ((t (:background "#fffe73"))))
- '(font-lock-comment-face ((t (:foreground "#3a5fcd" :slant italic ))))
- '(font-lock-string-face ((t (:foreground "#228b22" ))))
- '(font-lock-keyword-face ((t (:foreground "#000080"))))
- '(font-lock-builtin-face ((t (:foreground "#a12600"))))
- '(font-lock-variable-name-face ((t (:foreground "#a12600" ))))
- '(font-lock-type-face ((t (:foreground "#000080" :weight bold))))
- '(font-lock-function-name-face ((((class color)) (:foreground "#e06800"))))
- '(show-paren-match-face ((((class color)) ( :background "#bbb"))))
- '(font-lock-constant-face  ((((class color)) (:foreground "#e06800" :weight bold))))
- '(cperl-nonoverridable-face ((t (:foreground "#000080" :weight bold))))
- '(cperl-array-face ((t (:foreground "#a12600"))))
- '(cperl-hash-face ((t (:foreground "#a12600"))))
- '(underline ((t (:foreground "#999" :underline t))))
- '(which-func ((t (:foreground "#6c0" :weight bold))))
-)
+
 
 ;; Enable which function mode
 (add-hook 'cperl-mode-hook
@@ -215,49 +211,55 @@ by using nxml's indentation rules."
           (lambda ()
             (set-buffer-file-coding-system 'unix)))
 
-;;Parrot
-;;(load-file "~/.emacs.d/parrot.el")
-
-
-(custom-set-variables
-  '(org-agenda-files (quote ("~/working/org/todo.org"))))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-font-lock-mode 1)
 
-;;Run a perl (or others) files
-(defun run-current-file ()
-  "Execute or compile the current file. For example, if the current buffer is the file x.pl, then it'll call perl x.pl in a shell. The file can be php, perl, python, bash, java.
-File suffix is used to determine what program to run."
-(interactive)
-  (let (ext-map file-name file-ext prog-name cmd-str)
-; get the file name
-; get the program name
-; run it
-    (setq ext-map
-          '(
-            ("php" . "php")
-            ("pl" . "perl")
-            ("py" . "python")
-            ("sh" . "bash")
-            ("java" . "javac")
-            )
-          )
-    (setq file-name (buffer-file-name))
-    (setq file-ext (file-name-extension file-name))
-    (setq prog-name (cdr (assoc file-ext ext-map)))
-    (setq cmd-str (concat prog-name " " file-name))
-    (shell-command cmd-str)))
 
-
-(global-set-key (kbd "<f7>") 'run-current-file)
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
 
 ;; Do not show GNU splash screen
 (setq inhibit-startup-message t)
 
-;; ETAGS
-(setq tags-table-list 
-      '("~/TAGS" ))
+(add-hook 'vc-post-command-functions 'tags-vc-hook)
+
+;; Load project extension
+(load "~/.emacs.d/ellipse.el")
+
+;; PMC
+(add-to-list 'auto-mode-alist '("\\.pmc$" . c-mode))
+
+;; PSVN
+;; (require 'psvn)
+
+;; Clipboard
+(setq x-select-enable-clipboard t)
+
+;; Perlbrew
+(require 'perlbrew-mini)
+(perlbrew-mini-use "perl-5.14.2")
+
+;; Multi-web-mode
+(require 'multi-web-mode)
+(setq mweb-default-major-mode 'html-mode)
+(setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                  (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                  (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+(setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "pap5"))
+(multi-web-global-mode 1)
+
+
+;; Helm
+(require 'helm)
+(require 'helm-config)
+(require 'helm-cmd-t)
+(global-set-key (kbd "M-t") 'helm-projectile)
+
+;; Multiple Cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
